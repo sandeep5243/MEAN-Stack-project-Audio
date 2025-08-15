@@ -1,0 +1,14 @@
+<div class="audio-player">
+  <button 
+    class="play-button" 
+    [class.playing]="playing"
+    [class.loading]="loading"
+    [class.error]="error"
+    (click)="toggle()"
+    [title]="getButtonTitle()"
+    [disabled]="loading">
+    {{ getButtonText() }}
+  </button>
+  <audio #audioElement [src]="'http://localhost:3000' + item.audioUrl" preload="metadata" crossOrigin="anonymous"></audio>
+</div>
+  

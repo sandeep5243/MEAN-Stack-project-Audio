@@ -1,0 +1,68 @@
+<div class="audio-list-container">
+  <div class="content-wrapper">
+    <div class="topbar">
+      <h2>Audio Library</h2>
+      <div class="topbar-actions">
+        <a routerLink="/add" class="btn-add">+ Add Audio</a>
+        <button (click)="logout()" class="btn-logout">Logout</button>
+      </div>
+    </div>
+    
+    <div class="audio-table-container">
+      <table class="audio-table">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Duration</th>
+            <th>Play</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of items">
+            <td>
+              <img 
+                [src]="'http://localhost:3000' + a.imageUrl" 
+                [alt]="a.name" 
+                class="audio-image"
+                (error)="onImageError($event)"
+                (load)="onImageLoad($event)">
+            </td>
+            <td>
+              <div class="audio-info">
+                <span class="audio-name">{{ a.name }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="audio-info">
+                <span class="audio-desc">{{ a.desc }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="audio-duration">{{ a.durationSec }}s</span>
+            </td>
+            <td>
+              <app-audio-player [item]="a"></app-audio-player>
+            </td>
+            <td>
+              <div class="audio-actions">
+                <a [routerLink]="['/edit', a._id]" class="btn-edit">Edit</a>
+                <button (click)="delete(a._id)" class="btn-delete">Delete</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="pages > 1">
+        <button [disabled]="page===1" (click)="page=page-1; load()">Previous</button>
+        <span class="pagination-info">Page {{page}} of {{pages}} ({{total}} items)</span>
+        <button [disabled]="page===pages" (click)="page=page+1; load()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+  

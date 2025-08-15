@@ -1,0 +1,89 @@
+<div class="audio-form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h2>{{ id ? 'Update Audio' : 'Add New Audio' }}</h2>
+      <p>Upload your audio files and manage your music library</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="submit()" class="audio-form">
+      <div class="form-group">
+        <label for="songName">Song Name</label>
+        <input 
+          id="songName"
+          [(ngModel)]="name" 
+          name="name" 
+          required 
+          placeholder="Enter song name"
+          class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea 
+          id="description"
+          [(ngModel)]="desc" 
+          name="desc" 
+          required 
+          placeholder="Enter song description"
+          class="form-textarea"
+          rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="imageFile">Cover Image</label>
+        <div class="file-upload-container">
+          <input 
+            id="imageFile"
+            type="file" 
+            accept="image/*" 
+            (change)="onImageChange($event)" 
+            [required]="!id"
+            class="file-input">
+          <div class="file-upload-display">
+            <div class="file-icon">📷</div>
+            <div class="file-info">
+              <span class="file-name">{{ imageName || 'Choose an image file' }}</span>
+              <span class="file-hint">JPG, PNG, GIF up to 5MB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="audioFile">Audio File</label>
+        <div class="file-upload-container">
+          <input 
+            id="audioFile"
+            type="file" 
+            accept="audio/*" 
+            (change)="onSongChange($event)" 
+            [required]="!id"
+            class="file-input">
+          <div class="file-upload-display">
+            <div class="file-icon">🎵</div>
+            <div class="file-info">
+              <span class="file-name">{{ audioName || 'Choose an audio file' }}</span>
+              <span class="file-hint">MP3, WAV, M4A (minimum 30 seconds)</span>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="durationSec" class="duration-info">
+          <span class="duration-badge">Duration: {{ durationSec }}s</span>
+          <span *ngIf="durationSec < 30" class="duration-warning">⚠️ Minimum 30 seconds required</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" (click)="goBack()" class="btn-secondary">Cancel</button>
+        <button type="submit" [disabled]="isSubmitting" class="btn-primary">
+          <span *ngIf="isSubmitting" class="loading-spinner"></span>
+          {{ isSubmitting ? 'Saving...' : 'Save Audio' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
