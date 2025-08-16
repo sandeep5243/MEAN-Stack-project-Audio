@@ -7,15 +7,35 @@ const AUD_DIR = 'uploads/audio';
 
 // Create directories if they don't exist (without throwing errors if they already exist)
 [IMG_DIR, AUD_DIR].forEach((dir) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+  try {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+      console.log(`Created directory: ${dir}`);
+    }
+  } catch (error) {
+    console.error(`Error creating directory ${dir}:`, error.message);
   }
 });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    if (file.fieldname === 'image') cb(null, IMG_DIR);
-    else cb(null, AUD_DIR);
+    try {
+      if (file.fieldname === 'image') {
+        // Ensure directory exists before saving
+        if (!fs.existsSync(IMG_DIR)) {
+          fs.mkdirSync(IMG_DIR, { recursive: true });
+        }
+        cb(null, IMG_DIR);
+      } else {
+        // Ensure directory exists before saving
+        if (!fs.existsSync(AUD_DIR)) {
+          fs.mkdirSync(AUD_DIR, { recursive: true });
+        }
+        cb(null, AUD_DIR);
+      }
+    } catch (error) {
+      cb(error);
+    }
   },
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname);
