@@ -19,6 +19,7 @@ export class LoginComponent {
   email = ''; 
   username = '';
   errorMessage = '';
+  successMessage = '';
   isSubmitting = false;
 
   constructor(private auth: AuthService, private router: Router) {}
@@ -26,6 +27,7 @@ export class LoginComponent {
   toggleMode() {
     this.registering = !this.registering;
     this.errorMessage = '';
+    this.successMessage = '';
     this.clearForm();
   }
 
@@ -38,6 +40,7 @@ export class LoginComponent {
 
   submit() {
     this.errorMessage = '';
+    this.successMessage = '';
     this.isSubmitting = true;
     
     console.log('Submitting form:', { 
@@ -55,11 +58,36 @@ export class LoginComponent {
         return;
       }
 
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(this.email)) {
+        this.errorMessage = 'Please enter a valid email address';
+        this.isSubmitting = false;
+        return;
+      }
+
+      // Validate password length
+      if (this.password.length < 6) {
+        this.errorMessage = 'Password must be at least 6 characters long';
+        this.isSubmitting = false;
+        return;
+      }
+
+      // Validate username length
+      if (this.username.length < 3) {
+        this.errorMessage = 'Username must be at least 3 characters long';
+        this.isSubmitting = false;
+        return;
+      }
+
       this.auth.register(this.email, this.username, this.password).subscribe({
         next: (response) => {
           console.log('Register successful:', response);
           this.isSubmitting = false;
-          this.router.navigate(['/']);
+          this.successMessage = 'Account created successfully! Redirecting...';
+          setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 1500);
         },
         error: (error) => {
           console.error('Register error:', error);
@@ -79,7 +107,10 @@ export class LoginComponent {
         next: (response) => {
           console.log('Login successful:', response);
           this.isSubmitting = false;
-          this.router.navigate(['/']);
+          this.successMessage = 'Login successful! Redirecting...';
+          setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 1500);
         },
         error: (error) => {
           console.error('Login error:', error);
